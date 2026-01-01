@@ -1,23 +1,52 @@
-import express, { Application, Request, Response } from 'express';
+import express, { Application, Request, Response, NextFunction } from 'express';
 import cors from 'cors';
+import helmet from 'helmet';
+import morgan from 'morgan';
+import rateLimit from 'express-rate-limit';
+
+import { config } from '@/config/env';
+import { AppError } from '@/utils/AppError';
+import { errorHandler } from '@/middlewares/error.middleware';
+import { logger } from '@/utils/logger';
+import routes from '@/routes';
 
 const app: Application = express();
 
-app.use(cors());                 
-app.use(express.json());         
-app.use(express.urlencoded({ extended: true })); 
+app.use(helmet());
 
-app.get('/api/health', (req: Request, res: Response) => {
-  res.status(200).json({ 
-    status: 'OK', 
-    uptime: process.uptime(),
-    timestamp: new Date().toISOString() 
-  });
+app.use(cors({
+  origin: config.FRONTEND_URL,
+  credentials: true,
+  methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH', 'OPTIONS']
+}));
+
+if (config.NODE_ENV === 'development') {
+  app.use(morgan('dev'));
+} else {
+  app.use(morgan('combined', {
+    stream: { write: (message) => logger.info(message.trim()) }
+  }));
+}
+
+const limiter = rateLimit({
+  windowMs: 15 * 60 * 1000, 
+  max: 100, 
+  standardHeaders: true, 
+  legacyHeaders: false,
+  message: 'Too many requests from this IP, please try again after 15 minutes.'
+});
+app.use('/api', limiter);
+
+app.use(express.json({ limit: '10kb' })); 
+app.use(express.urlencoded({ extended: true, limit: '10kb' }));
+
+app.use('/api/v1', routes);
+
+app.all(/(.*)/, (req: Request, res: Response, next: NextFunction) => {
+  next(new AppError(`Can't find ${req.originalUrl} on this server!`, 404));
 });
 
-app.use((err: any, req: Request, res: Response, next: any) => {
-  console.error(err.stack);
-  res.status(500).json({ error: 'Internal Server Error' });
-});
+// Captures ALL errors (AppError, SyntaxError, DatabaseError...)
+app.use(errorHandler);
 
 export default app;

@@ -3,6 +3,8 @@ import cors from 'cors';
 import helmet from 'helmet';
 import morgan from 'morgan';
 import rateLimit from 'express-rate-limit';
+import compression from 'compression';
+import hpp from 'hpp';
 
 import { config } from '@/config/env';
 import { AppError } from '@/utils/AppError';
@@ -12,6 +14,7 @@ import routes from '@/routes';
 
 const app: Application = express();
 
+app.enable('trust proxy');
 app.use(helmet());
 
 app.use(cors({
@@ -20,13 +23,11 @@ app.use(cors({
   methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH', 'OPTIONS']
 }));
 
-if (config.NODE_ENV === 'development') {
-  app.use(morgan('dev'));
-} else {
-  app.use(morgan('combined', {
-    stream: { write: (message) => logger.info(message.trim()) }
-  }));
-}
+const logFormat = config.NODE_ENV === 'development' ? 'dev' : 'combined';
+app.use(morgan(logFormat, {
+  stream: { write: (message) => logger.info(message.trim()) },
+  skip: (req) => req.url === '/api/v1/health'
+}));
 
 const limiter = rateLimit({
   windowMs: 15 * 60 * 1000, 
@@ -36,6 +37,9 @@ const limiter = rateLimit({
   message: 'Too many requests from this IP, please try again after 15 minutes.'
 });
 app.use('/api', limiter);
+
+app.use(hpp());
+app.use(compression());
 
 app.use(express.json({ limit: '10kb' })); 
 app.use(express.urlencoded({ extended: true, limit: '10kb' }));

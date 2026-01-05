@@ -1,10 +1,11 @@
+import { logger } from '@/utils/logger';
 import { Request, Response, NextFunction } from 'express';
 
 export const errorHandler = (err: any, req: Request, res: Response, next: NextFunction) => {
   err.statusCode = err.statusCode || 500;
   err.status = err.status || 'error';
 
-  console.error('ERROR:', err);
+  logger.error('ERROR:', err);
 
   if (err.isOperational) {
     res.status(err.statusCode).json({

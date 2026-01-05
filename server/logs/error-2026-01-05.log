@@ -1,0 +1,1 @@
+{"address":"127.0.0.1","code":"ECONNREFUSED","errno":-4078,"fatal":true,"level":"error","message":"Échec connexion MySQL connect ECONNREFUSED 127.0.0.1:3306","port":3306,"stack":"Error: connect ECONNREFUSED 127.0.0.1:3306\n    at TCPConnectWrap.afterConnect [as oncomplete] (node:net:1637:16)","syscall":"connect","timestamp":"2026-01-05T21:54:37.118Z"}

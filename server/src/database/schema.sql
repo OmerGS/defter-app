@@ -240,7 +240,7 @@ CREATE TABLE payments (
 
 
 -- ========================================================
--- E. SEED DATA (INITIALISATION)
+-- E. SEED DATA
 -- ========================================================
 
 INSERT INTO roles (slug, label, is_system) VALUES 

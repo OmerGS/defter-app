@@ -1,9 +1,0 @@
-{"level":"info","message":"Connecting to MySQL Database...","timestamp":"2026-01-05T21:54:37.108Z"}
-{"level":"info","message":"Connecting to MySQL Database...","timestamp":"2026-01-05T21:55:35.735Z"}
-{"level":"info","message":"Base de données connectée","timestamp":"2026-01-05T21:55:37.855Z"}
-{"level":"info","message":"\n      ################################################\n      DEFTER SERVER RUNNING\n      URL:   http://localhost:5000\n      Mode:  development\n      ################################################\n      ","timestamp":"2026-01-05T21:55:37.862Z"}
-{"level":"info","message":"SIGINT received. Starting graceful shutdown...","timestamp":"2026-01-05T22:00:23.231Z"}
-{"level":"info","message":"Connecting to MySQL Database...","timestamp":"2026-01-05T22:00:28.603Z"}
-{"level":"info","message":"Base de données connectée","timestamp":"2026-01-05T22:00:29.545Z"}
-{"level":"info","message":"\n      ################################################\n      DEFTER SERVER RUNNING\n      URL:   http://localhost:5000\n      Mode:  development\n      ################################################\n      ","timestamp":"2026-01-05T22:00:29.551Z"}
-{"level":"info","message":"SIGINT received. Starting graceful shutdown...","timestamp":"2026-01-05T22:11:06.333Z"}
